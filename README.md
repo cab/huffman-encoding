@@ -1,5 +1,16 @@
 # huffman-encoding
 
+[![crates.io](https://img.shields.io/crates/v/huffman-encoding?label=latest)](https://crates.io/crates/huffman-encoding)
+
+## Usage
+
+Add this to your Cargo.toml:
+
+```toml
+[dependencies]
+huffman-encoding = "0.1"
+```
+
 ```rust
 // weights are represented as value -> frequency pairs
 let weights = vec![
