@@ -81,10 +81,7 @@ pub struct Decoder<T> {
     root: Node<T>,
 }
 
-impl<T> Decoder<T>
-where
-    T: Clone,
-{
+impl<T> Decoder<T> {
     fn new(root: Node<T>) -> Self {
         Self { root }
     }
@@ -101,7 +98,10 @@ where
         self.decode_iter(encoded).collect()
     }
 
-    pub fn decode_owned(&self, encoded: &BitVec) -> Vec<T> {
+    pub fn decode_owned(&self, encoded: &BitVec) -> Vec<T>
+    where
+        T: Clone,
+    {
         self.decode_iter(encoded).cloned().collect()
     }
 }
@@ -117,15 +117,15 @@ impl<'a, T> Iterator for DecoderIter<'a, T> {
     fn next(&mut self) -> Option<Self::Item> {
         let bit = self.input.next()?;
         if bit {
-            if let Some(ref r) = self.current_node.right {
-                self.current_node = r;
+            if let Some(ref right) = self.current_node.right {
+                self.current_node = right;
             }
-        } else if let Some(ref l) = self.current_node.left {
-            self.current_node = l;
+        } else if let Some(ref left) = self.current_node.left {
+            self.current_node = left;
         }
-        if let Some(ch) = self.current_node.value.as_ref() {
+        if let Some(value) = self.current_node.value.as_ref() {
             self.current_node = &self.root;
-            Some(ch)
+            Some(value)
         } else {
             self.next()
         }
@@ -144,7 +144,7 @@ where
     pub fn new(weights: impl IntoIterator<Item = (T, u32)>) -> Result<Self> {
         let mut nodes = weights
             .into_iter()
-            .map(|(value, freq)| Box::new(Node::new(freq, Some(value))))
+            .map(|(value, frequency)| Box::new(Node::new(frequency, Some(value))))
             .collect::<Vec<_>>();
 
         while nodes.len() > 1 {
@@ -169,6 +169,7 @@ where
         Ok(Self { encoder, decoder })
     }
 
+    /// Encodes data into a BitVec. Fails if any of the data is not present in the dictionary.
     pub fn encode(&self, data: &[T]) -> Result<BitVec> {
         self.encoder.encode(data)
     }
@@ -185,6 +186,7 @@ where
         self.decoder.decode_owned(encoded)
     }
 
+    /// Split into a Encoder and Decoder.
     pub fn split(self) -> (Encoder<T>, Decoder<T>) {
         (self.encoder, self.decoder)
     }
