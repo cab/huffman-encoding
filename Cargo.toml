@@ -1,0 +1,9 @@
+[package]
+name = "huffman-encoding"
+version = "0.1.0"
+authors = ["conner bryan <conner@bryanthorpe.com>"]
+edition = "2018"
+
+[dependencies]
+bit-vec = { version = "^0.6" }
+thiserror = { version = "^1.0" }
