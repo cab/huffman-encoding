@@ -1,6 +1,8 @@
 [package]
 name = "huffman-encoding"
 version = "0.1.0"
+license = "MIT/Apache-2.0"
+description = "Huffman encoding of arbitrary data"
 authors = ["conner bryan <conner@bryanthorpe.com>"]
 edition = "2018"
 
